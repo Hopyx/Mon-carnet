@@ -1,0 +1,16 @@
+{
+  "name": "Ventre Léger",
+  "short_name": "Ventre Léger",
+  "description": "Journal des repas, ressentis, selles et traitements",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#96C4E3",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

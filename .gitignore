@@ -1,0 +1,17 @@
+# Secrets et configuration locale (l'app n'en utilise aucun aujourd'hui : garder ces règles par précaution)
+.env
+.env.*
+*.pem
+*.key
+
+# Données de santé : sauvegardes et imports personnels, jamais dans le dépôt
+*.json
+!package.json
+!package-lock.json
+*.pdf
+
+# Divers
+node_modules/
+.DS_Store
+.claude/settings.local.json
+!.claude/settings.json
