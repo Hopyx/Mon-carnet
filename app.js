@@ -1,4 +1,4 @@
-// Ventre Léger — code de l'app (chargé par index.html, sans script inline pour permettre une CSP stricte).
+// Mon carnet — code de l'app (chargé par index.html, sans script inline pour permettre une CSP stricte).
 'use strict';
 /* ---------- Outils ---------- */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -186,7 +186,34 @@ function suggestions(q){const f=freqMap();if(!q){const fav=Object.keys(f).sort((
 /* ---------- Rendu ---------- */
 let tab='today', range=14, journalDays=14;
 const TABS=[['today','Aujourd’hui',I.home],['journal','Journal',I.list],['cure','Cure',I.pill],['dossier','Dossier',I.folder],['bilan','Bilan',I.chart]];
-function renderTabs(){$('#tabs').innerHTML=TABS.map(([k,l,ic])=>`<button class="tab" data-act="tab" data-tab="${k}" ${tab===k?'aria-current="page"':''}>${ic}<span>${l}</span></button>`).join('')}
+function renderTabs(){
+ const box=$('#tabs');
+ if(!box.dataset.built){box.innerHTML='<span class="tab-ind" aria-hidden="true"></span>'+TABS.map(([k,l,ic])=>`<button class="tab" data-act="tab" data-tab="${k}">${ic}<span>${l}</span></button>`).join('');box.dataset.built='1'}
+ $$('.tab',box).forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ moveTabInd();
+}
+let indPos=null,indAnim=null;
+function moveTabInd(){
+ const box=$('#tabs'),ind=$('.tab-ind',box),t=$('.tab[aria-current="page"]',box);if(!ind||!t)return;
+ const svg=$('svg',t),cs=getComputedStyle(svg),px=v=>parseFloat(v)||0;
+ const w=px(cs.width)+px(cs.paddingLeft)+px(cs.paddingRight),h=px(cs.height)+px(cs.paddingTop)+px(cs.paddingBottom);if(!t.offsetWidth||!w)return;
+ const to={x:t.offsetLeft+(t.offsetWidth-w)/2,y:t.offsetTop+px(getComputedStyle(t).paddingTop),w,h};
+ ind.style.width=to.w+'px';ind.style.height=to.h+'px';
+ const end=`translate(${to.x.toFixed(1)}px,${to.y.toFixed(1)}px)`;
+ const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(indPos&&!still&&Math.abs(indPos.x-to.x)>1&&ind.animate){
+  const from=indPos,dist=Math.abs(to.x-from.x),mid=(from.x+to.x)/2,stretch=1+Math.min(.9,dist/to.w*.35);
+  if(indAnim)indAnim.cancel();
+  indAnim=ind.animate([
+   {transform:`translate(${from.x.toFixed(1)}px,${to.y.toFixed(1)}px) scaleX(1)`},
+   {transform:`translate(${mid.toFixed(1)}px,${to.y.toFixed(1)}px) scale(${stretch.toFixed(2)},.82)`,offset:.45},
+   {transform:`translate(${(to.x+(to.x>from.x?3:-3)).toFixed(1)}px,${to.y.toFixed(1)}px) scale(.94,1.06)`,offset:.8},
+   {transform:end}
+  ],{duration:520,easing:'cubic-bezier(.3,.7,.25,1)'});
+ }
+ ind.style.transform=end;indPos=to;
+}
+window.addEventListener('resize',()=>{indPos=null;moveTabInd()});
 let lastTab=null,lastPose=null,justKey=null,justOn=false,enterT;
 function render(){document.body.dataset.tab=tab;const enter=tab!==lastTab;lastTab=tab;renderTabs();const v=$('#view');
  if(enter){v.classList.remove('view-enter');$('#tabs').classList.remove('tabs-enter');void v.offsetWidth;v.classList.add('view-enter');$('#tabs').classList.add('tabs-enter');clearTimeout(enterT);enterT=setTimeout(()=>{v.classList.remove('view-enter');$('#tabs').classList.remove('tabs-enter')},1600)}
@@ -698,8 +725,8 @@ function icsFor(t){
  const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
  const count=t.days>0?Math.max(1,t.days-Math.max(0,daysBetween(t.start,dayKey(Date.now())))):90;
  const startDay=t.start>dayKey(Date.now())?t.start:dayKey(Date.now());
- const ev=t.times.map((tm,i)=>['BEGIN:VEVENT',`UID:${t.id}-${i}-${startDay}@ventre-leger`,`DTSTAMP:${stamp}`,`DTSTART:${startDay.replace(/-/g,'')}T${tm.replace(':','')}00`,'DURATION:PT10M',`RRULE:FREQ=DAILY;COUNT=${count}`,`SUMMARY:${e(t.name+(t.dose?' '+t.dose:''))}`,`DESCRIPTION:${e(t.note||'Prise à cocher dans Ventre Léger')}`,'BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${e(t.name)}`,'TRIGGER:PT0M','END:VALARM','END:VEVENT'].join('\r\n'));
- return{text:['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Ventre Leger//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH',...ev,'END:VCALENDAR'].join('\r\n'),count,startDay};
+ const ev=t.times.map((tm,i)=>['BEGIN:VEVENT',`UID:${t.id}-${i}-${startDay}@ventre-leger`,`DTSTAMP:${stamp}`,`DTSTART:${startDay.replace(/-/g,'')}T${tm.replace(':','')}00`,'DURATION:PT10M',`RRULE:FREQ=DAILY;COUNT=${count}`,`SUMMARY:${e(t.name+(t.dose?' '+t.dose:''))}`,`DESCRIPTION:${e(t.note||'Prise à cocher dans Mon carnet')}`,'BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${e(t.name)}`,'TRIGGER:PT0M','END:VALARM','END:VEVENT'].join('\r\n'));
+ return{text:['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mon carnet//FR','CALSCALE:GREGORIAN','METHOD:PUBLISH',...ev,'END:VCALENDAR'].join('\r\n'),count,startDay};
 }
 function icsSheet(id){
  const t=S.treatments.find(x=>x.id===id);if(!t)return;const r=icsFor(t);
@@ -721,7 +748,7 @@ async function shareFile(blob,name,type){
 }
 function backupBlob(files){return new Blob([JSON.stringify({app:'ventre-leger',version:2,savedAt:new Date().toISOString(),data:S,files},null,1)],{type:'application/json'})}
 async function backup(){
- const name=`ventre-leger-${dayKey(Date.now())}.json`,ids=S.tests.map(t=>t.pdf&&t.pdf.id).filter(Boolean);
+ const name=`mon-carnet-${dayKey(Date.now())}.json`,ids=S.tests.map(t=>t.pdf&&t.pdf.id).filter(Boolean);
  if(!ids.length){shareFile(backupBlob({}),name,'application/json');return}
  const files={};for(const id of ids){try{const r=await FDB.get(id);if(r)files[id]={name:r.name,type:r.type,data:await blobToDataURL(r.blob)}}catch(e){}}
  const blob=backupBlob(files);
@@ -746,7 +773,7 @@ $('#restore-file').addEventListener('change',async ev=>{
   if(!Array.isArray(raw.meals)||!Array.isArray(raw.treatments))throw 0;
   openSheet(`${head('Restaurer la sauvegarde ?')}<p>Elle contient ${d.meals.length} repas, ${(d.symptoms||[]).length} ressentis, ${(d.stools||[]).length} selles, ${d.treatments.length} traitements et ${(d.tests||[]).length} tests. Elle remplacera tout ce qui est actuellement dans l’app.</p><div class="sheet-actions"><button class="btn ghost" data-act="close">Annuler</button><button class="btn primary" id="r-ok">Remplacer</button></div>`,root=>{
    $('#r-ok',root).onclick=()=>{S=normalize(d);restoreFiles(j.files);save();closeSheet();toast('Sauvegarde restaurée');render()}});
- }catch(e){toast('Ce fichier n’est pas une sauvegarde Ventre Léger.')}
+ }catch(e){toast('Ce fichier n’est pas une sauvegarde de Mon carnet.')}
 });
 
 /* ---------- PDF ---------- */
@@ -812,7 +839,7 @@ function makePdf(){
    else if(e.kind==='stool'&&(e.note||e.blood))text(`${hm(e.ts)}  Selles : ${[e.blood?'sang':'',e.note].filter(Boolean).join(', ')}`,{x:M+4,w:W-4,size:9,color:mut});
   }
  }
- const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(...mut);doc.text(L(`Ventre Léger - page ${i}/${n}`),M,292)}
+ const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(...mut);doc.text(L(`Mon carnet - page ${i}/${n}`),M,292)}
  shareFile(doc.output('blob'),`suivi-imo-${today}.pdf`,'application/pdf');
 }
 

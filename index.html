@@ -5,13 +5,13 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Ventre Léger</title>
+<title>Mon carnet</title>
 <meta name="theme-color" content="#96C4E3">
 <meta name="color-scheme" content="light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Ventre Léger">
+<meta name="apple-mobile-web-app-title" content="Mon carnet">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="app-icon-180.png">
 <link rel="icon" href="app-icon-192.png">
@@ -222,14 +222,18 @@ input[type=range]{width:100%;accent-color:var(--sky-deep);height:28px;padding:0;
 .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.03em}
 .tab svg{width:24px;height:24px;box-sizing:content-box;padding:4px 16px;border-radius:999px}
 .tab[aria-current="page"]{color:var(--sky-deep)}
-.tab[aria-current="page"] svg{background:var(--accent-soft)}
+.tab[aria-current="page"] svg{background:transparent}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 86px);transform:translate(-50%,20px);background:var(--fg);color:#fff;padding:8px 18px 8px 8px;border-radius:999px;font-weight:600;font-size:.92rem;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:calc(100% - 32px);display:flex;align-items:center;gap:10px}
 .toast img{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:top;background:var(--sky);flex:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* Animations */
 :root{--rose:#F8DDE6}
-.tabbar .in{grid-template-columns:repeat(5,1fr)}
+.tabbar .in{grid-template-columns:repeat(5,1fr);position:relative}
+/* Pastille bleue qui glisse d'un onglet à l'autre */
+.tab-ind{position:absolute;left:0;top:0;width:0;height:0;border-radius:999px;background:var(--accent-soft);pointer-events:none;z-index:0;will-change:transform;box-shadow:0 4px 14px -6px rgba(48,134,200,.45)}
+.tab{position:relative;z-index:1;transition:color .3s ease}
+.tab svg{transition:transform .2s ease}
 .tab svg{padding:4px 12px}
 .ico.prn{background:var(--peach);color:var(--plum)}
 .alert{background:#FCE3E1;border-radius:26px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}

@@ -1,4 +1,4 @@
-# Ventre Léger
+# Mon carnet
 
 Carnet de suivi IMO pour iPhone : repas (avec repères FODMAP), ressenti, selles (échelle de Bristol), cures avec prises à cocher, rappels Calendrier, bilan et PDF pour le médecin.
 

@@ -6,6 +6,8 @@
       "Read(./**/*.pem)",
       "Read(./**/*.key)",
       "Read(./**/ventre-leger-*.json)",
+      "Read(./**/mon-carnet-*.json)",
+      "Read(//home/user/mon-carnet-*.json)",
       "Read(./**/alizee-*.json)",
       "Read(//home/user/alizee-*.json)",
       "Read(//home/user/ventre-leger-*.json)",

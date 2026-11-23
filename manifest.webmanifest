@@ -1,6 +1,6 @@
 {
-  "name": "Ventre Léger",
-  "short_name": "Ventre Léger",
+  "name": "Mon carnet",
+  "short_name": "Mon carnet",
   "description": "Journal des repas, ressentis, selles et traitements",
   "lang": "fr",
   "start_url": "./",
