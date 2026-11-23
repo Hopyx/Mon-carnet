@@ -1,6 +1,6 @@
 // Garde l'app disponible hors connexion. Changer VERSION à chaque mise à jour des fichiers.
-const VERSION = 'ventre-leger-v8';
-const LOCAL = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './jspdf.umd.min.js', './pdf.min.js', './pdf.worker.min.js',
+const VERSION = 'ventre-leger-v9';
+const LOCAL = ['./', './index.html', './app.js', './manifest.webmanifest', './app-icon-180.png', './app-icon-192.png', './app-icon-512.png', './jspdf.umd.min.js', './pdf.min.js', './pdf.worker.min.js',
   ...['bras-ouverts','surprise','coucou','pouce','montre','reflechit','ravie','presente','victoire','coeur'].map((n) => `./mascotte/${n}.webp`)];
 const REMOTE = [];
 
